@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link data-trunk rel="rust" data-wasm-opt="s" />
+		<title>Team Mavericks</title>
+		<link data-trunk rel="css" href="src/index.css"/>
+		<link data-trunk rel="copy-dir" href="images/"
+		<link data-trunk rel="copy-dir" href="docs/"
+	</head>
+	<body>
+		<canvas id="background"></canvas>
+	</body>
+<script>
+	let details = navigator.userAgent;
+	let regexp = /android|iphone|kindle|ipad/i;
+	let isMobileDevice = regexp.test(details);
+	let points_num = 32;
+	let fps = 60;
+	if (isMobileDevice) {
+		let fps = 30;
+		points_num = 16;
+	}
+	let points = [];
+	for (let i = 0; i < points_num; i++) {
+		const lb = Math.random();
+		const ub = Math.random();
+		points.push({
+			x: Math.random(),
+			from: Math.min(lb, ub),
+			to: Math.max(lb, ub),
+			r: 40 + 70*Math.random(),
+			t: Math.random(),
+			speed: 0.5 + Math.random() * 0.5,
+		})
+	}
+	let canvas = document.getElementById("background");
+	let context = canvas.getContext("2d");
+	window.addEventListener("resize", () => {
+		context.canvas.width = window.innerWidth;
+		context.canvas.height = window.innerHeight;
+	});
+	let is_rendering = true;
+	let is_scrolling_down = true;
+	setInterval(() => {
+		if (!is_rendering) {
+			return;
+		}
+		console.log("Rendering");
+		context.strokeStyle = "blue";
+		context.fillStyle = "white";
+		context.shadowBlur = 20;
+		context.shadowColor = "#000";
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+		context.beginPath();
+		for (const p of points) {
+			if (is_scrolling_down) {
+				p.t += p.speed / fps;
+				p.t %= 1.0;
+			} else {
+				p.t -= p.speed / fps;
+				if (p.t <= 0) {
+					p.t = 1;
+				}
+			}
+			let radius = 0.0;
+			if (p.t < 0.5) {
+				radius = p.t * p.r;
+			} else {
+				radius = (1-p.t) * p.r;
+			}
+			const y = (p.to - p.from) * p.t + p.from;
+			context.moveTo(p.x * context.canvas.width, y * context.canvas.height);
+			context.lineTo(p.x * context.canvas.width + radius, y * context.canvas.height);
+			context.lineTo(p.x * context.canvas.width + radius, y * context.canvas.height + radius);
+			context.lineTo(p.x * context.canvas.width, y * context.canvas.height + radius);
+			context.lineTo(p.x * context.canvas.width, y * context.canvas.height);
+			context.closePath();
+			//console.log(p.x * context.canvas.width, y * context.canvas.height + radius);
+		//	context.ellipse(p.x * context.canvas.width, y * context.canvas.height, radius, radius, 0, 0, Math.PI * 2);
+		}
+		context.fill();
+		is_rendering = false;
+
+		},
+		1000/fps);
+	let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+	document.addEventListener("scroll", () => {
+		is_rendering = true;
+		const st = window.pageYOffset || document.documentElement.scrollTop;
+		is_scrolling_down = st > lastScrollTop;
+		console.log(is_scrolling_down);
+		lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+	}, false);
+	context.canvas.width = window.innerWidth;
+	context.canvas.height = window.innerHeight;
+	</script>
+</html>
