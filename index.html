@@ -92,7 +92,7 @@
 		is_scrolling_down = st > lastScrollTop;
 		console.log(is_scrolling_down);
 		lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-		}, false);
+		}, true);
 	context.canvas.width = window.innerWidth;
 	context.canvas.height = window.innerHeight;
 	</script>
