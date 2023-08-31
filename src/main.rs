@@ -1028,7 +1028,6 @@ enum AboutSection {
     Establishment,
     Objectives,
     Achievements,
-    StudentIdeas,
 }
 impl ToString for AboutSection {
     fn to_string(&self) -> String {
@@ -1037,7 +1036,6 @@ impl ToString for AboutSection {
             Self::Establishment => "Establishment".to_string(),
             Self::Objectives => "Objectives".to_string(),
             Self::Achievements => "Achievements".to_string(),
-            Self::StudentIdeas => "Student Ideas".to_string(),
         }
     }
 }
@@ -1063,10 +1061,6 @@ fn About(cx: Scope) -> impl IntoView {
             "Spreaded glories at various technical fest, including IIT Bombay, IIT Kanpur, IIT Delhi, IIT Bhu, IIT Ropar, PEC, Thapar University and recevied cash prize at Guru Nanak Dev University , Amritsar Punjab.".to_string(),
             "In our team, we provide guidance for developing skills in various Coding Platforms, Development Board, Cricut Design Software, 3D Modelling Software, Hardware Implementation and the latest technologies.".to_string()]),
 
-        (AboutSection::StudentIdeas, vec![
-            "Prashant Sharma (Drone Ninja) : The purpose of this idea is to make a drone that can help our farmers in farming.".to_string(),
-            "Ashish Bobby (Smart Irrigation) : Making an automated irrigation system that can judiciously use water for irrigation.".to_string()
-        ]),
     ]);
 
     let currently_selected = create_rw_signal(cx, Some(AboutSection::Aim));
