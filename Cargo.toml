@@ -10,8 +10,12 @@ console_log = "1.0.0"
 enum-iterator = "1.4.1"
 femme = "2.2.1"
 futures = "0.3.28"
+kahuna = "0.3.0"
 leptos = { version = "0.4.8", features = ["csr", "nightly"] }
+leptos_router = { version = "0.4.10", features = ["csr"] }
 log = "0.4.20"
+wasm-bindgen = "0.2.87"
+web-sys = { version = "0.3.64", features = ["CanvasRenderingContext2d"] }
 
 [profile.release]
 # Do not perform backtrace for panic on release builds.

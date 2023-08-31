@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<link data-trunk rel="rust" data-wasm-opt="s" />
+		<link data-trunk rel="rust" data-wasm-opt="z" />
 		<title>Team Mavericks</title>
 		<link data-trunk rel="css" href="src/index.css"/>
 		<link data-trunk rel="copy-dir" href="images/"
@@ -11,23 +11,23 @@
 	<body>
 		<canvas id="background"></canvas>
 	</body>
-<script>
+	<script>
 	let details = navigator.userAgent;
 	let regexp = /android|iphone|kindle|ipad/i;
 	let isMobileDevice = regexp.test(details);
-	let points_num = 32;
+	let points_num = 256;
 	let fps = 60;
 	if (isMobileDevice) {
 		let fps = 30;
-		points_num = 16;
+		points_num = 128;
 	}
 	let points = [];
 	for (let i = 0; i < points_num; i++) {
 		const lb = Math.random();
 		const ub = Math.random();
-		points.push({
+	points.push({
 			x: Math.random(),
-			from: Math.min(lb, ub),
+		from: Math.min(lb, ub),
 			to: Math.max(lb, ub),
 			r: 40 + 70*Math.random(),
 			t: Math.random(),
@@ -39,6 +39,7 @@
 	window.addEventListener("resize", () => {
 		context.canvas.width = window.innerWidth;
 		context.canvas.height = window.innerHeight;
+		is_rendering = true;
 	});
 	let is_rendering = true;
 	let is_scrolling_down = true;
@@ -54,7 +55,7 @@
 		context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 		context.beginPath();
 		for (const p of points) {
-			if (is_scrolling_down) {
+		if (is_scrolling_down) {
 				p.t += p.speed / fps;
 				p.t %= 1.0;
 			} else {
@@ -77,13 +78,13 @@
 			context.lineTo(p.x * context.canvas.width, y * context.canvas.height);
 			context.closePath();
 			//console.log(p.x * context.canvas.width, y * context.canvas.height + radius);
-		//	context.ellipse(p.x * context.canvas.width, y * context.canvas.height, radius, radius, 0, 0, Math.PI * 2);
+			//	context.ellipse(p.x * context.canvas.width, y * context.canvas.height, radius, radius, 0, 0, Math.PI * 2);
 		}
 		context.fill();
 		is_rendering = false;
 
 		},
-		1000/fps);
+	1000/fps);
 	let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 	document.addEventListener("scroll", () => {
 		is_rendering = true;
@@ -91,7 +92,7 @@
 		is_scrolling_down = st > lastScrollTop;
 		console.log(is_scrolling_down);
 		lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-	}, false);
+		}, false);
 	context.canvas.width = window.innerWidth;
 	context.canvas.height = window.innerHeight;
 	</script>

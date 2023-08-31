@@ -1,10 +1,17 @@
 use core::fmt::Display;
 use std::time::Duration;
 use std::{collections::HashMap, hash::Hash};
+use leptos::ev::{SubmitEvent};
+use leptos::html::{Input, Canvas};
 
-use enum_iterator::{all, reverse_all, Sequence};
+use enum_iterator::{all, Sequence};
 use leptos::*;
+use leptos_router::*;
 use log::info;
+
+use wasm_bindgen::prelude::*;
+use web_sys::Event;
+use std::f64;
 
 fn main() {
     femme::start();
@@ -15,23 +22,132 @@ fn main() {
 }
 #[component]
 fn App(cx: Scope) -> impl IntoView {
+   // setup_background(cx);
     view! {cx,
-        <Page id="landing_page">
-            <Navbar/>
-            <Landing/>
-        </Page>
-        <Page id="projects">
-            <Projects/>
-        </Page>
-        <Page id="about">
-            <About/>
-        </Page>
-        <Page id="gallery">
-            <Gallery />
-        </Page>
-        <Page id="team">
-            <Team />
-        </Page>
+        <Router>
+            <nav>
+                <Navbar/>
+            </nav>
+            <main>
+                <Routes>
+                    <Route path="" view=move |_| view!{cx, 
+                        <Page id="landing_page">
+                            <Landing/>
+                        </Page>
+                    } />
+                    <Route path="projects" view=move |_| view!{cx, 
+                        <Page id="projects">
+                            <Projects/>
+                        </Page>
+                    } />
+                    <Route path="about" view=move |_| view!{cx, 
+                        <Page id="about">
+                            <About/>
+                        </Page>
+                    } />
+                    <Route path="gallery" view=move |_| view!{cx, 
+                        <Page id="gallery">
+                            <Gallery/>
+                        </Page>
+                    } />
+                    <Route path="team" view=move |_| view!{cx, 
+                        <Page id="team">
+                            <Team/>
+                        </Page>
+                    } />
+                    <Route path="register" view=move |_| view!{cx, 
+                        <Page id="register">
+                            <Register/>
+                        </Page>
+                    } />
+                </Routes>
+            </main>
+        </Router>
+    }
+}
+
+fn setup_background(cx: Scope) {
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvas = document.get_element_by_id("background").unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let context: web_sys::CanvasRenderingContext2d = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+    let (context, set_context) = create_signal(cx, context);
+    window_event_listener(ev::resize, move |ev| {
+        set_context(canvas
+            .get_context("2d")
+            .unwrap()
+            .unwrap()
+            .dyn_into::<web_sys::CanvasRenderingContext2d>()
+            .unwrap());
+    });
+
+    create_effect(cx, move |a: Option<i32>| {
+    context.with(|ctx| {
+    let context = ctx;
+    context.begin_path();
+    // Draw the outer circle.
+    context
+        .arc(75.0, 75.0, 50.0, 0.0,f64::consts::PI * 2.0)
+        .unwrap();
+
+    // Draw the mouth.
+    context.move_to(110.0, 75.0);
+    context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
+
+    // Draw the left eye.
+    context.move_to(65.0, 65.0);
+    context
+        .arc(60.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
+        .unwrap();
+
+    // Draw the right eye.
+    context.move_to(95.0, 65.0);
+    context
+        .arc(90.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
+        .unwrap();
+
+    context.stroke();
+            if let Some(a) = a {
+                return a + 1;
+            } else {
+                0
+            }
+    })
+    });
+}
+
+#[component]
+fn Register(cx: Scope) -> impl IntoView {
+    let first_name: NodeRef<Input> = create_node_ref(cx);
+    let last_name: NodeRef<Input> = create_node_ref(cx);
+    let mob_number: NodeRef<Input> = create_node_ref(cx);
+    let email_address: NodeRef<Input> = create_node_ref(cx);
+    let roll_no: NodeRef<Input> = create_node_ref(cx);
+    let register = move |ev: SubmitEvent| {
+        ev.prevent_default();
+    };
+    view!{cx, 
+        <img src="/images/logo.svg" /> 
+        <div class="heading">
+            Sign In
+        </div>
+        <form on:submit=register>
+            <input type="text" node_ref=first_name placeholder="First Name" />
+            <input type="text" node_ref=last_name placeholder="Last Name" />
+            <input type="" node_ref=roll_no placeholder="Roll No." />
+            <input type="text" node_ref=mob_number placeholder="Phone Number"/>
+            <input type="email" node_ref=email_address placeholder="E-Mail" />
+            <button type="submit">Submit</button>
+        </form>
     }
 }
 
@@ -1098,12 +1214,24 @@ fn Landing(cx: Scope) -> impl IntoView {
         <div class="landing">
             <div class="heading">
             "Team Mavericks"
-            </div>
-            <div class="motto">
-            "Born to be " <ChangingText text={mottos.into()} time_per_letter={Duration::from_millis(100)} time_per_word={Duration::from_secs(3)}/>
+                <div class="motto">
+                "Born to be " <ChangingText 
+                    text={mottos.into()} 
+                    time_per_letter={Duration::from_millis(100)} 
+                    time_per_word={Duration::from_secs(3)}/>
+                </div>
             </div>
             <div class="cta">
-                <a href="/#projects"> <button>Go to Projects</button></a>
+                <div class="heading"> Explore </div>
+                    {all::<Routes>()
+                        .map(|dest| 
+                            view! {cx, 
+                                <A href={dest.path()}>
+                                    <div>
+                                        {dest.to_string()}
+                                    </div>
+                                </A>})
+                        .collect_view(cx)}
             </div>
         </div>
     }
@@ -1182,7 +1310,7 @@ fn Navbar(cx: Scope) -> impl IntoView {
         <div class="navbar">
             <img src="/images/logo.svg"/>
             <div class="navbar_buttons">
-            {all::<Routes>().map(|dest| view! {cx, <a href={dest.path()}><div>{dest.to_string()}</div></a>} ).collect_view(cx)}
+            {all::<Routes>().map(|dest| view! {cx, <A href={dest.path()}><div>{dest.to_string()}</div></A>} ).collect_view(cx)}
             </div>
         </div>
     }
@@ -1210,10 +1338,10 @@ impl ToString for Routes {
 impl Routes {
     fn path(&self) -> String {
         match self {
-            Self::Home => "/#landing".to_string(),
-            Self::About => "/#about".to_string(),
-            Self::Gallery => "/#gallery".to_string(),
-            Self::Projects => "/#projects".to_string(),
+            Self::Home => "/".to_string(),
+            Self::About => "/about".to_string(),
+            Self::Gallery => "/gallery".to_string(),
+            Self::Projects => "/projects".to_string(),
         }
     }
 }

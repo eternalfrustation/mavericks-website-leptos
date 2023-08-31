@@ -1,3 +1,5 @@
+ @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300&family=Josefin+Sans:wght@500&family=Share+Tech+Mono&display=swap');
+
 :root {
 	--accent-color-1: #f45825;
 	--text-color: white;
@@ -51,8 +53,6 @@
 	.navbar {
 		height: 5svh;
 	}
-	#projects > .content > .project_list {
-	}
 	#projects > .selector_btns {
 		flex-flow: column;
 	}
@@ -73,7 +73,7 @@ body {
 	flex-flow: column;
 }
 
-#page {
+.page {
 	height: 100svh;
 	display: flex;
 	flex-flow: column;
@@ -89,6 +89,7 @@ body {
 .navbar img {
 	padding: 5px;
 	transition: 0.8s;
+	animation: 3s ease-in 1s infinite spin;
 }
 
 .navbar img:hover {
@@ -131,6 +132,10 @@ body {
 	background-position: bottom;
 }
 
+.heading {
+	font-family: 'Share Tech Mono', monospace;
+}
+
 /* Landing Page CSS */
 
 #landing_page {
@@ -142,20 +147,19 @@ body {
 
 .landing {
 	width: 100%;
-	display: flex;
+	display: grid;
 	flex-flow: column;
-	height: 90%;
+	height: 100%;
 	align-items: center;
 	justify-content: center;
+	grid-template-columns: 100% ;
+	background: rgb(0,0,0);
+	background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(161,101,7,0.7) 20%, rgba(150,152,166,0) 50%, rgba(161,101,7,0.7) 80%, rgba(0,0,0,1) 100%); 
 }
 
-.landing {
-	width: 100%;
-	display: flex;
-	flex-flow: column;
-	height: 90%;
-	align-items: center;
-	justify-content: center;
+.motto {
+	font-size: 2rem;
+	font-family: 'Josefin Sans', sans-serif;
 }
 
 .landing > .heading {
@@ -163,44 +167,51 @@ body {
 	font-weight: bolder;
 	color: var(--main-color);
 	text-shadow: 0 0 13px rgba(0,0,0,0.6);
+	align-self: baseline;
+	padding: 40px;
 }
 
 .cta {
 	display: flex;
-	flex-flow: row;
+	flex-flow: column;
+	width: 25%;
+	font-size: 2rem;
+	justify-self: last baseline;
+	color: whitesmoke;
+	text-align: center;
 }
 
 .cta > a {
 	text-decoration: none;
-	color: var(--accent-color-1);
-	text-align: center;
+	color: white;
+	font-size: 1.4rem;
+	text-align: left;
 	border-style: solid;
-	border-color: var(--accent-color-1);
-	border-width: 0 0 4px 0;
+	border-color: white;
+	padding: 10px;
+	border-width: 0px 0px 0px 4px;
 	transition-property: color, background-position;
 	transition-duration: 0.5s;
 	transition-timing-function: ease-in-out;
 	background-size: 200% 200%;
 	background-image: linear-gradient(
-		to top,
+		to right,
 		var(--accent-color-1) 50%,
 		rgba(0, 0, 0, 0) 0
 	);
-	background-position: top;
+	background-position: right;
+	font-family: 'IBM Plex Mono', monospace;
 }
 
 .cta > a:hover {
 	color: var(--accent-color-2);
-	background-position: bottom;
+	background-position: left;
 }
 
 .landing > div {
 	transition: 0.8s;
 }
 
-.landing > div:hover {
-	transform: scale(1.2);
-}
 .landing > .motto {
 	font-size: 1.5em;
 	font-weight: bold;
@@ -293,6 +304,7 @@ body {
 #team {
 	grid-template-rows: auto auto;
 	grid-template-columns: auto;
+	overflow-y: scroll;
 }
 
 #team > .content {
@@ -396,7 +408,7 @@ body {
 }
 
 #projects {
-	display: unset;
+	display: block;
 }
 
 #projects > .heading {
@@ -710,6 +722,55 @@ li {
 .cta > a > button {
 	background: none;
 }
-.cta > a {
-	background-image: linear-gradient( to top, var(--background-color-navbar) 50%, rgba(0, 0, 0, 0) 0 );
+
+@keyframes spin {
+	0% {
+		rotate: y 0deg;
+	}
+	50% {
+		rotate: y 180deg;
+	}
+	100% {
+		rotate: y 0deg;
+	}
+}
+
+#register > img {
+	animation: 3s ease-in-out 1s infinite spin;
+	height: 100%;
+	scale: 0.8;
+}
+
+#register {
+	grid-template: auto auto / 2fr 1fr;
+}
+
+#register > .heading {
+	grid-row: 1;
+	grid-column: 1 / span 2;
+}
+
+#register > form {
+	width: 100%;
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
+	padding-right: 20px;
+}
+
+#register > form > input {
+	border-width: 0px 0px 10px 0px;
+	border-color: var(--accent-color-1);
+	font-size: 2em;
+	outline: 0;
+	background: none;
+	transition: border-color 1s;
+}
+
+#register > form > input:focus {
+	border-color: var(--accent-color-2);
+}
+
+#register > form > button {
+	height: unset;
 }
